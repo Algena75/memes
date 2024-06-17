@@ -1,0 +1,38 @@
+[tool.poetry]
+name = "memes"
+version = "0.1.0"
+description = "Mud soft testwork"
+authors = ["Alex Naumov <algena75@yandex.ru>"]
+readme = "README.md"
+packages = [
+    {include = "web"},
+    {include = "images"}
+]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "0.110.2"
+uvicorn = {version = "0.29.0", extras = ["standard"]}
+sqlalchemy = "2.0.29"
+alembic = "1.13.1"
+asyncpg = {version = "0.29.0", extras = ["postgres"]}
+pydantic-settings = "2.2.1"
+python-multipart = "^0.0.9"
+aiohttp = "^3.9.5"
+minio = "^7.2.7"
+
+
+[tool.poetry.group.test.dependencies]
+flake8 = "7.0.0"
+pytest = "8.2.0"
+httpx = "0.27.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+
+[tool.poetry.scripts]
+web = "web.main:run"
+images = "images.main:run"
