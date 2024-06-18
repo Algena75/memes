@@ -1,0 +1,72 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:13.0-alpine
+    restart: unless-stopped
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    expose:
+      - 5432
+    env_file:
+      - .env
+
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      - MINIO_ACCESS_KEY=TestAccessKey
+      - MINIO_SECRET_KEY=TestSecretKey
+    volumes:
+      - minio-data:/data
+    command: server /data --console-address ":9001"
+    networks:
+      - my_network
+
+  web:
+    build:
+      context: .
+      dockerfile: ./docker/web.Dockerfile
+    container_name: web
+    ports:
+      - "8000:8000"
+    depends_on:
+      - minio
+      - images
+    links:
+      - images:images
+    environment:
+      - MINIO_ENDPOINT=minio:9000
+      - MINIO_ACCESS_KEY=TestAccessKey
+      - MINIO_SECRET_KEY=TestSecretKey
+      - MINIO_BUCKET_NAME=my_bucket
+    command: [ "poetry", "run", "web" ]
+    volumes:
+      - minio-data:/app/minio-data
+    networks:
+      - my_network
+
+  images:
+    build:
+      context: .
+      dockerfile: ./docker/images.Dockerfile
+    container_name: images
+    ports:
+      - "8001:8001"
+    depends_on:
+      - db
+    links:
+      - db:db
+    env_file:
+      - .env
+    command: [ "poetry", "run", "images" ]
+
+
+volumes:
+  postgres_data: {}
+  minio-data: {}
+
+networks:
+  my_network:

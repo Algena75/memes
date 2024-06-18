@@ -3,10 +3,11 @@ from typing import Annotated, Dict, List
 
 from aiohttp import ClientSession
 from fastapi import APIRouter, Depends, Form, HTTPException, UploadFile
+from fastapi.responses import FileResponse
 
 from web.config import settings
 from web.schemas import MemDB
-from web.utils import get_client_session, remove_file, write_file
+from web.utils import get_client_session, get_file, remove_file, write_file
 from web.validators import check_image
 
 router = APIRouter(tags=['memes'])
@@ -109,3 +110,10 @@ async def delete_mem(
             status_code=HTTPStatus.NOT_FOUND,
             detail='Мем не найден!'
         )
+
+
+@router.get('/downloadfile/{filename}', response_class=FileResponse)
+async def download_file(filename: str):
+    file_path = f"./{filename}"
+    await get_file(filename, file_path)
+    return FileResponse(file_path, filename=filename)
