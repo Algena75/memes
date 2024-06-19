@@ -38,6 +38,7 @@ services:
     links:
       - images:images
     environment:
+      - PRIVATE_URL=http://images:8001
       - MINIO_ENDPOINT=minio:9000
       - MINIO_ACCESS_KEY=TestAccessKey
       - MINIO_SECRET_KEY=TestSecretKey
@@ -53,6 +54,7 @@ services:
       context: .
       dockerfile: ./docker/images.Dockerfile
     container_name: images
+    entrypoint: ./server-entrypoint.sh
     ports:
       - "8001:8001"
     depends_on:
@@ -61,6 +63,8 @@ services:
       - db:db
     env_file:
       - .env
+    environment:
+      - POSTGRES_SERVER=db
     command: [ "poetry", "run", "images" ]
 
 
