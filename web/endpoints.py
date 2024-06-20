@@ -116,4 +116,4 @@ async def delete_mem(
 async def download_file(filename: str):
     file_path = f"./{filename}"
     await get_file(filename, file_path)
-    return FileResponse(f'/downloads/{file_path}', filename=filename)
+    return FileResponse(file_path, filename=filename)

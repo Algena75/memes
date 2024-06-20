@@ -16,9 +16,8 @@ services:
     ports:
       - "9000:9000"
       - "9001:9001"
-    environment:
-      - MINIO_ACCESS_KEY=TestAccessKey
-      - MINIO_SECRET_KEY=TestSecretKey
+    env_file:
+      - .env
     volumes:
       - minio_data:/data
     command: server /data --console-address ":9001"
@@ -29,8 +28,8 @@ services:
       dockerfile: ./docker/images.Dockerfile
     container_name: images
     entrypoint: ./server-entrypoint.sh
-    ports:
-      - "8001:8001"
+    expose:
+      - 8001
     depends_on:
       - db
     env_file:
@@ -50,12 +49,10 @@ services:
     depends_on:
       - minio
       - images
+    env_file:
+      - .env
     environment:
       - PRIVATE_URL=http://images:8001
-      - MINIO_ENDPOINT=minio:9000
-      - MINIO_ACCESS_KEY=TestAccessKey
-      - MINIO_SECRET_KEY=TestSecretKey
-      - MINIO_BUCKET_NAME=my-bucket
     volumes:
       - minio_data:/app/minio_data
       - ./web:/app/web
