@@ -1,11 +1,9 @@
-import errno
-import os
 from minio import Minio
 import io
 
-from aiohttp import ClientSession
+from aiohttp import ClientSession, TCPConnector
 
-from web.config import settings, UPLOAD_TO
+from web.config import settings
 
 client = Minio(
     endpoint=settings.MINIO_ENDPOINT,
@@ -16,7 +14,8 @@ client = Minio(
 
 
 async def get_client_session():
-    async with ClientSession() as client_session:
+    async with ClientSession(connector=TCPConnector(verify_ssl=False),
+                             trust_env=True) as client_session:
         yield client_session
 
 

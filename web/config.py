@@ -1,6 +1,7 @@
 from pydantic_settings import BaseSettings
 import os
 
+
 class Settings(BaseSettings):
     APP_TITLE: str = 'API для работы с коллекцией мемов'
     APP_DESCRIPTION: str = 'Тестовое задание'
@@ -8,8 +9,7 @@ class Settings(BaseSettings):
     MINIO_ENDPOINT: str = os.getenv("MINIO_ENDPOINT", 'minio:9000')
     MINIO_ACCESS_KEY: str = os.getenv("MINIO_ACCESS_KEY")
     MINIO_SECRET_KEY: str = os.getenv("MINIO_SECRET_KEY")
-    MINIO_BUCKET_NAME: str = os.getenv("MINIO_BUCKET_NAME", 'my_bucket')
-
+    MINIO_BUCKET_NAME: str = os.getenv("MINIO_BUCKET_NAME", 'my-bucket')
 
     class Config:
         env_file = '.env'

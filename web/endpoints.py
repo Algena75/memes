@@ -18,7 +18,7 @@ async def get_memes_list(
     session: ClientSession = Depends(get_client_session)
 ) -> List[MemDB]:
     """Возвращает список мемов."""
-    async with session.get(f'{settings.PRIVATE_URL}/memes') as resp:
+    async with session.get(f'{settings.PRIVATE_URL}/memes', ssl=False) as resp:
         return await resp.json()
 
 
@@ -44,7 +44,7 @@ async def create_mem(
     file: UploadFile,
     description: Annotated[str, Form()] = None,
     session: ClientSession = Depends(get_client_session)
-    ) -> Dict:
+) -> Dict:
     """Создаёт новый мем."""
     await check_image(file.content_type)
     contents = await file.read()
@@ -116,4 +116,4 @@ async def delete_mem(
 async def download_file(filename: str):
     file_path = f"./{filename}"
     await get_file(filename, file_path)
-    return FileResponse(file_path, filename=filename)
+    return FileResponse(f'/downloads/{file_path}', filename=filename)
