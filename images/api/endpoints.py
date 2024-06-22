@@ -35,7 +35,7 @@ async def get_mem(id: int,
         )
 
 
-@router.post('/memes')
+@router.post('/memes', status_code=HTTPStatus.CREATED)
 async def create_mem(
     filename: Annotated[str, Form()], description: Annotated[str, Form()],
     session: AsyncSession = Depends(get_async_session)
