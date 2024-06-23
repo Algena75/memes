@@ -9,7 +9,7 @@ COPY ./images /app/images
 
 RUN apt update && pip install poetry==1.7.0 \
     && poetry config virtualenvs.create false \
-    && poetry install --with web --no-interaction --no-ansi
+    && poetry install --without test,images --no-interaction --no-ansi
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
