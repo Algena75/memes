@@ -38,7 +38,7 @@ async def test_post_memes_txt_file(client: AsyncClient):
     """
     Проверка эндпоинта /memes с post-запросом текстового файла.
     """
-    with open("tests/post/text_file.txt", "rb") as text_file:
+    with open("./files/Test_Python-developer.pdf", "rb") as text_file:
         files = {'file': text_file}
         response = await client.post("/memes", files=files)
     assert response.status_code == status.HTTP_422_UNPROCESSABLE_ENTITY
@@ -51,7 +51,7 @@ async def test_post_memes_image_file(client: AsyncClient):
     Проверка эндпоинта /memes с post-запросом изображения.
     Localhost:8001 не отвечает.
     """
-    with open("tests/post/image.jpg", "rb") as image_file:
+    with open("./files/project_schema.png", "rb") as image_file:
         files = {'file': image_file}
         response = await client.post("/memes", files=files)
     assert response.status_code == status.HTTP_503_SERVICE_UNAVAILABLE
