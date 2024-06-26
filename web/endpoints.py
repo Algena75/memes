@@ -4,6 +4,7 @@ from typing import Annotated, Dict, List
 from aiohttp import ClientSession
 from fastapi import APIRouter, Depends, Form, HTTPException, UploadFile
 from fastapi.responses import FileResponse
+from fastapi_pagination import Page, paginate
 
 from web.config import settings
 from web.schemas import MemDB
@@ -13,14 +14,16 @@ from web.validators import check_image
 router = APIRouter(tags=['memes'])
 
 
-@router.get('/memes', response_model=list[MemDB])
+@router.get('/memes', response_model=Page[MemDB])
 async def get_memes_list(
     session: ClientSession = Depends(get_client_session)
-) -> List[MemDB]:
+) -> Page[MemDB]:
     """Возвращает список мемов."""
     try:
         async with session.get(f'{settings.PRIVATE_URL}/memes', ssl=False) as resp:
-            return await resp.json()
+            collection = await resp.json()
+            print(collection)
+            return paginate(collection)
     except:
         raise HTTPException(
             status_code=HTTPStatus.SERVICE_UNAVAILABLE,
